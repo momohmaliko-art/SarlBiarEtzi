@@ -1,0 +1,11 @@
+// appel direct
+navigator.permissions.query({ name: 'geolocation' })
+  .then(result => { /* ... */ });
+
+// ou lier la fonction avant usage
+const query = navigator.permissions.query.bind(navigator.permissions);
+query({ name: 'notifications' }).then(...);
+
+// ou wrapper si vous devez fournir un callback
+const safeQuery = opts => navigator.permissions.query(opts);
+someApi(safeQuery);

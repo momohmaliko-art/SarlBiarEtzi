@@ -1,0 +1,342 @@
+﻿@model List<Contact>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+<style>
+    body {
+    background: #0b1220;
+    color: white;
+    }
+
+    .chat-wrapper {
+    display: flex;
+    gap: 10px;
+    max-width: 1000px;
+    margin: 25px auto;
+    }
+
+    .online-users {
+    width: 140px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 10px;
+    padding: 10px;
+    }
+
+    .user {
+    font-size: 12px;
+    padding: 6px;
+    border-radius: 6px;
+    margin-top: 6px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    }
+
+    .dot {
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    }
+
+    .chat-box-simple {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 12px;
+    padding: 12px;
+    }
+
+    .chat-header {
+    text-align: center;
+    color: #60a5fa;
+    font-weight: bold;
+    margin-bottom: 8px;
+    }
+
+    .agents {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    }
+
+    .agents button {
+    flex: 1;
+    padding: 6px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    cursor: pointer;
+    }
+
+    .agents button.active {
+    background: #3b82f6;
+    }
+
+    .chat-messages {
+    height: 260px;
+    overflow-y: auto;
+    background: black;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    }
+
+    .msg {
+    margin: 4px 0;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    }
+
+    .me {
+    background: #3b82f6;
+    color: white;
+    margin-left: auto;
+    width: fit-content;
+    }
+
+    .other {
+    color: #00ff88;
+    }
+
+    .chat-input {
+    display: flex;
+    gap: 5px;
+    }
+
+    .chat-input input {
+    flex: 1;
+    padding: 7px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(0,0,0,0.3);
+    color: white;
+    }
+
+    .chat-input button {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #3b82f6;
+    color: white;
+    }
+</style>
+
+<div class="table-responsive">
+    <h2 class="text-center mb-4">Messages</h2>
+
+    <table   class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Email</td>
+                    <td>@item.Message</td>
+                    <td>
+                        <a class="btn btn-danger btn-sm"
+                               href="/Contact/Delete/@item.Id"
+                               onclick="return confirm('Are you sure?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- CHAT -->
+<div class="chat-wrapper">
+
+    <div class="online-users" id="onlineBox">
+        <h6>Online</h6>
+    </div>
+
+    <div class="chat-box-simple">
+
+        <div class="chat-header">💬 GENERAL CHAT</div>
+
+        <div class="agents">
+            <button class="active" onclick="switchToGeneral(this)">💬 General</button>
+            <button onclick="switchToBot(this)">🤖 BOT</button>
+        </div>
+
+        <div class="chat-messages" id="chatBox"></div>
+
+        <div class="chat-input">
+            <input type="text" id="msgInput" placeholder="Type message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    /* ================= STATE ================= */
+    let currentMode = "GENERAL";
+    let username = "@Context.Session.GetString("user")";
+
+    /* ================= DATA ================= */
+    let generalMessages = [];
+    let botMessages = [];
+
+    /* ================= SIGNALR ================= */
+    let connection = new signalR.HubConnectionBuilder()
+    .withUrl("/chathub")
+    .build();
+
+    connection.start().then(() => {
+    connection.invoke("JoinGeneral");
+    loadMessages();
+    });
+
+    /* ================= ONLINE ================= */
+    connection.on("UpdateOnlineUsers", function(users){
+
+    let box = document.getElementById("onlineBox");
+
+    let html = "<h6>Online</h6>";
+
+    users.forEach(u => {
+    html += `<div class="user"><div class="dot"></div>${u}</div>`;
+    });
+
+    box.innerHTML = html;
+    });
+
+    /* ================= RECEIVE ================= */
+    connection.on("ReceiveMessage", function(sender, message){
+
+    addMessage(sender + ": " + message, false);
+
+    });
+
+    /* ================= SWITCH ================= */
+    function switchToGeneral(el){
+
+    currentMode = "GENERAL";
+
+    document.querySelectorAll(".agents button")
+    .forEach(b => b.classList.remove("active"));
+
+    el.classList.add("active");
+
+    renderGeneral();
+    }
+
+    function switchToBot(el){
+
+    currentMode = "BOT";
+
+    document.querySelectorAll(".agents button")
+    .forEach(b => b.classList.remove("active"));
+
+    el.classList.add("active");
+
+    renderBot();
+    }
+
+    /* ================= SEND ================= */
+    async function sendMessage(){
+
+    let input = document.getElementById("msgInput");
+    let text = input.value.trim();
+
+    if(text === "") return;
+
+    input.value = "";
+
+    if(currentMode === "BOT"){
+
+    botMessages.push("Me: " + text);
+    renderBot();
+
+    await sendToBot(text);
+    return;
+    }
+
+    connection.invoke("SendMessage", username, text);
+    }
+
+    /* ================= RENDER GENERAL ================= */
+    function renderGeneral(){
+
+    let box = document.getElementById("chatBox");
+    box.innerHTML = "";
+
+    generalMessages.forEach(m => {
+    let div = document.createElement("div");
+    div.className = "msg other";
+    div.innerText = m.sender + ": " + m.message;
+    box.appendChild(div);
+    });
+
+    box.scrollTop = 999999;
+    }
+
+    /* ================= RENDER BOT ================= */
+    function renderBot(){
+
+    let box = document.getElementById("chatBox");
+    box.innerHTML = "";
+
+    botMessages.forEach(m => {
+    let div = document.createElement("div");
+    div.className = "msg other";
+    div.innerText = m;
+    box.appendChild(div);
+    });
+
+    box.scrollTop = 999999;
+    }
+
+    /* ================= LOAD ================= */
+    async function loadMessages(){
+
+    let res = await fetch("/Contact/GetRoomMessages");
+    let data = await res.json();
+
+    generalMessages = data;
+    renderGeneral();
+    }
+
+    /* ================= BOT ================= */
+    async function sendToBot(message) {
+
+    let res = await fetch("/Contact/SendToBot", {
+    method: "POST",
+    headers: {
+    "Content-Type": "application/json"
+    },
+    body: JSON.stringify(message)
+    });
+
+    let data = await res.json();
+
+    botMessages.push("BOT: " + data.reply);
+    renderBot();
+    }
+
+
+    /* ================= INIT ================= */
+    window.onload = function(){
+    loadMessages();
+    };
+
+</script>

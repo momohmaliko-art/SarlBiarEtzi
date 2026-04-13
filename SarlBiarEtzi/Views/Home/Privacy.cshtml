@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Privacy";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: #0b1220;
+        color: white;
+        font-family: Arial;
+    }
+
+    /* ===== CONTAINER ===== */
+    .box {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 25px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(96,165,250,0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    /* ===== TITLE ===== */
+    h1 {
+        text-align: center;
+        color: #60a5fa;
+        margin-bottom: 20px;
+    }
+
+    /* ===== TYPEWRITER TEXT ===== */
+    #text {
+        white-space: pre-line;
+        font-size: 16px;
+        line-height: 1.8;
+        min-height: 300px;
+    }
+
+    /* cursor */
+    .cursor {
+        display: inline-block;
+        width: 10px;
+        background: #60a5fa;
+        margin-left: 2px;
+        animation: blink 0.8s infinite;
+    }
+
+    @@keyframes blink {
+        50% {
+            opacity: 0;
+        }
+    }
+</style>
+
+<div class="box">
+    <h1>SARL BIAR_ETZI ALGERIA</h1>
+
+    <div id="text"></div><span class="cursor"></span>
+</div>
+
+<script>
+    const text = `Construcciones Biar_Etzi est une entreprise familiale fondée en 1978 et a démarré son activité en réalisant des travaux d'excavation pour des entreprises de construction, et les travaux de Bâtiment.
+
+    La présence dans le secteur de BTP depuis sa création, et la croissance continue de ses activités, ont permis à l’entreprise de disposer d’une vaste expérience dans toutes sortes de travaux dans le domaine de construction.
+
+    L’entreprise Constructions Biar_Etzi réalise des projets pour différents clients (Administrations publics, Collectivités locales, Sociétés publics, Clients privés, etc.) sous différentes modalités : contrat d’exécution de travaux, projets clés en main, ou concessions administratives.
+
+    NOS ACTIVITÉS :
+
+    L’ENTREPRISE réalise toutes sortes de travaux et de projets dans le secteur des travaux publics, hydraulique et bâtiments.
+
+    - Travaux publics et hydrauliques : 46,63%
+    - Aménagements urbains : 67,80%
+    - Routes et autoroutes : 05,10%
+    - Infrastructures hydrauliques : 13,40%
+    - Énergie et environnement : 13,60%
+    - Bâtiments : 53,36%
+    - Établissements institutionnels : 15,50%
+    - Établissements sportifs : 12,50%
+    - Établissements sanitaires : 12,50%
+    - Établissements scolaires : 07,20%
+    - Parkings : 03,00%
+    - Sites résidentiels et commerciaux : 35,70%
+    - Réhabilitations : 10,50%
+    - Travaux spéciaux : 03,00%`;
+
+    let i = 0;
+    const speed = 20;
+
+    function typeWriter() {
+        if (i < text.length) {
+            document.getElementById("text").innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        typeWriter();
+    });
+</script>

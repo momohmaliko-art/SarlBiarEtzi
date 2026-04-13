@@ -1,0 +1,1080 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: #0b1220;
+        color: white;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+        text-align: center;
+        padding: 100px 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+        .hero h1 {
+            font-size: 55px;
+            font-weight: bold;
+            color: #60a5fa;
+            text-shadow: 0 0 20px rgba(96,165,250,0.5);
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.8;
+            max-width: 900px;
+            margin: auto;
+        }
+
+    /* ===== BUTTON ===== */
+    .btn-3d {
+        margin-top: 20px;
+        padding: 12px 25px;
+        background: #3b82f6;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 8px 0 #1e40af;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-3d:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #1e40af;
+        }
+
+    /* ===== CARDS ===== */
+    .card-3d {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(96,165,250,0.2);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        color: white;
+        backdrop-filter: blur(10px);
+        transition: 0.4s;
+        height: 100%;
+    }
+
+        .card-3d:hover {
+            transform: translateY(-15px) rotateX(10deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(96,165,250,0.5);
+        }
+
+    /* ===== IMAGE PLACEHOLDER ===== */
+    .img-box {
+        height: 180px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.5);
+        font-size: 14px;
+    }
+
+    /* ===== SECTION ===== */
+    .section {
+        padding: 60px 20px;
+    }
+
+        .section h2 {
+            color: #60a5fa;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+    /* ===== COMPANY TEXT SECTION (NEW) ===== */
+    .company-box {
+        max-width: 1000px;
+        margin: 80px auto;
+        padding: 30px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(96,165,250,0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        line-height: 1.8;
+    }
+
+        .company-box h3 {
+            color: #60a5fa;
+            margin-top: 25px;
+        }
+
+        .company-box ul {
+            margin-left: 20px;
+        }
+
+        .company-box li {
+            margin-bottom: 6px;
+        }
+
+    /* ===== CMD TYPE EFFECT (ADDED ONLY) ===== */
+    .hero {
+    text-align: center;
+    padding: 120px 20px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* خلفية متحركة خفيفة */
+.hero::before {
+    content: "";
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(96,165,250,0.15), transparent 70%);
+    top: -100px;
+    left: -100px;
+    animation: floatBg 8s ease-in-out infinite;
+    z-index: 0; /* 👈 مهم جدًا */
+}
+
+@@keyframes floatBg {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(40px, 40px); }
+}
+.hero * {
+    position: relative;
+    z-index: 2;
+}
+
+/* النص الرئيسي */
+.cmd-title {
+    font-size: 60px;
+    font-weight: bold;
+    color: #60a5fa;
+    text-shadow: 0 0 30px rgba(96,165,250,0.6);
+    font-family: "Courier New", monospace;
+}
+
+/* sub text */
+.hero-sub {
+    font-size: 18px;
+    opacity: 0.85;
+    max-width: 700px;
+    margin: 20px auto;
+    line-height: 1.7;
+}
+
+/* buttons */
+.hero-actions {
+    margin-top: 30px;
+}
+
+.btn-main {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    margin: 5px;
+    box-shadow: 0 10px 25px rgba(59,130,246,0.4);
+    transition: 0.3s;
+}
+
+.btn-main:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(59,130,246,0.6);
+}
+
+.btn-outline {
+    padding: 12px 28px;
+    border: 1px solid rgba(96,165,250,0.5);
+    border-radius: 10px;
+    color: #60a5fa;
+    text-decoration: none;
+    margin: 5px;
+    transition: 0.3s;
+}
+
+.btn-outline:hover {
+    background: rgba(96,165,250,0.1);
+}
+
+/* cursor احترافي */
+.cmd-title::after {
+    content: "|";
+    margin-left: 6px;
+    animation: blink 1s infinite;
+}
+
+@@keyframes blink {
+    0%,100% {opacity:1;}
+    50% {opacity:0;}
+}
+
+
+
+
+    .global-wrapper {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    /* 🌍 GLOBE */
+    #globeContainer {
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 60px rgba(96,165,250,0.4), inset 0 0 40px rgba(0,0,0,0.8);
+    }
+
+    /* TEXT */
+    .about-text {
+        flex: 1;
+        min-width: 250px;
+        opacity: 0.9;
+        line-height: 1.8;
+    }
+
+    /* 🧊 SLIDER */
+    .slider {
+        width: 260px;
+        height: 260px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+        .slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+
+    /* ================= IMPROVED CARDS SIZE ================= */
+    .card-3d {
+        padding: 30px;
+        border-radius: 18px;
+        transform-style: preserve-3d;
+    }
+
+    /* ================= IMAGE BOX FIX ================= */
+    .img-box {
+        height: 220px; /* كبرناها */
+        overflow: hidden;
+        position: relative;
+    }
+
+        /* الصورة داخل الكارد */
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s ease;
+            border-radius: 10px;
+        }
+
+    /* hover احترافي */
+    .card-3d:hover .img-box img {
+        transform: scale(1.08);
+    }
+
+    /* ================= GRID SPACING UPGRADE ================= */
+    .section .row {
+        margin-top: 10px;
+    }
+
+    /* ================= BETTER TEXT LOOK ================= */
+    .section p {
+        line-height: 1.8;
+        letter-spacing: 0.3px;
+    }
+
+    /* ================= RESPONSIVE FIX ================= */
+    @@media (max-width: 768px) {
+        .card-3d {
+            margin-bottom: 20px;
+        }
+
+        .img-box {
+            height: 200px;
+        }
+    }
+
+    .stats-box {
+        max-width: 900px;
+        margin: auto;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(96,165,250,0.2);
+        border-radius: 15px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat {
+        margin-bottom: 18px;
+    }
+
+    .label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 15px;
+        opacity: 0.9;
+    }
+
+    .number {
+        float: right;
+        color: #60a5fa;
+        font-weight: bold;
+    }
+
+    .bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        border-radius: 20px;
+        transition: width 2s ease;
+    }
+
+
+    .video-container {
+        display: flex;
+        justify-content: center;
+        margin: 40px 0;
+    }
+
+        .video-container iframe {
+            width: 80%;
+            max-width: 900px;
+            height: 450px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            border: 1px solid rgba(96,165,250,0.3);
+        }
+
+    .dashboard-3d {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .dash-title {
+        color: #60a5fa;
+        font-size: 32px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(96,165,250,0.4);
+    }
+
+    .dash-desc {
+        max-width: 900px;
+        margin: auto;
+        opacity: 0.8;
+        margin-bottom: 40px;
+    }
+
+    .grid-dash {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+        gap: 20px;
+    }
+
+    .dash-card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(96,165,250,0.2);
+        border-radius: 15px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        transform-style: preserve-3d;
+        transition: 0.4s;
+    }
+
+        .dash-card:hover {
+            transform: translateY(-10px) rotateX(10deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .dash-card h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+    /* BAR */
+    .bar {
+        width: 100%;
+        height: 8px;
+        background: #1e293b;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+        .bar div {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 10px;
+            transition: 2s;
+        }
+
+    .counter {
+        font-size: 18px;
+        font-weight: bold;
+        color: #60a5fa;
+    }
+
+
+
+
+
+</style>
+
+
+
+
+<!-- HERO -->
+<div class="hero">
+
+    <h1 class="cmd-title" id="cmdText"></h1>
+
+    <p class="hero-sub">
+        Entreprise de construction spécialisée dans les travaux publics,
+        bâtiments et hydraulique depuis 2008.
+    </p>
+
+    <div class="hero-actions">
+        <a href="/Contact/Contact" class="btn-main">Demander un devis</a>
+       
+    </div>
+
+</div>
+
+
+
+
+
+
+<!-- 🌍 GLOBAL ABOUT SECTION -->
+<div class="section container">
+
+    <h2>À propos de l'entreprise</h2>
+
+    <div class="global-wrapper">
+
+        <!-- 🌍 3D GLOBE -->
+        <div id="globeContainer"></div>
+
+        <!-- TEXT -->
+        <div class="about-text">
+            <p>
+                SARL Biar Etzi Algeria est une entreprise de droit algérien créée en 2008,
+                spécialisée dans les travaux TCE, bâtiment, hydraulique et infrastructures.
+                Elle intervient auprès des administrations publiques et clients privés.
+            </p>
+        </div>
+
+        <!-- 🧊 3D CARD SLIDER -->
+        <div class="card-3d slider">
+
+            <img id="sliderImg" style="width:100%; max-width:500px; transition:0.5s; border-radius:15px;"  img src="~/photo/unnamed.jpg" />
+            
+     
+        </div>
+
+    </div>
+</div>
+
+<div class="section container">
+    <h2>Nos Domaines d’activité</h2>
+
+    <div class="stats-box">
+
+        <div class="stat">
+            <span class="label">Travaux publics et hydrauliques</span>
+            <span class="number" data-target="46.63">0%</span>
+            <div class="bar"><div class="fill"></div></div>
+        </div>
+
+        <div class="stat">
+            <span class="label">Aménagements urbains</span>
+            <span class="number" data-target="67.80">0%</span>
+            <div class="bar"><div class="fill"></div></div>
+        </div>
+
+        <div class="stat">
+            <span class="label">Routes et infrastructures</span>
+            <span class="number" data-target="5.10">0%</span>
+            <div class="bar"><div class="fill"></div></div>
+        </div>
+
+        <div class="stat">
+            <span class="label">Infrastructures hydrauliques</span>
+            <span class="number" data-target="13.40">0%</span>
+            <div class="bar"><div class="fill"></div></div>
+        </div>
+
+        <div class="stat">
+            <span class="label">Bâtiments</span>
+            <span class="number" data-target="53.36">0%</span>
+            <div class="bar"><div class="fill"></div></div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ACTIVITIES -->
+<div class="section container">
+    <h2>Nos Activités</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card-3d">
+                <div class="img-box">
+                    
+                    <img src="~/photo/qdqz.jpg" />
+                </div>
+                <h4>🏗️ Bâtiment</h4>
+                <p>Construction de logements, immeubles et structures en béton armé.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-3d">
+                <div class="img-box">
+                    <img src="~/photo/qsdqds.jpg" />
+                    
+                </div>
+                <h4>🚧 Travaux Publics</h4>
+                <p>Routes, infrastructures et aménagements urbains.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-3d">
+                <div class="img-box">
+                    
+                    <img src="~/photo/zadadz.jpg" />
+                </div>
+                <h4>💧 Hydraulique</h4>
+                <p>Réseaux hydrauliques et travaux environnementaux.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="video-section">
+    <h2 style="text-align:center; color:#60a5fa; margin-bottom:20px;">
+        Vidéo de l'entreprise
+    </h2>
+
+   <div style="width:100%; max-width:600px; margin:auto;">
+    <video controls style="width:100%; height:auto; border-radius:10px;">
+        <source src="~/video/sarlbiar.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- SERVICES -->
+<div class="section container">
+    <h2>Domaines de Réalisation</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card-3d">
+                <h5>🏗️ Construction</h5>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-3d">
+                <h5>🧱 Rénovation</h5>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-3d">
+                <h5>⚡ Électricité</h5>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-3d">
+                <h5>🏢 Génie Civil</h5>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="dashboard-3d">
+
+        <h2 class="dash-title">NOS ACTIVITÉS</h2>
+
+        <p class="dash-desc">
+            L’Entreprise Sarl Biar Etzi Algeria réalise toutes sortes de travaux et de projets dans le secteur des travaux publics, hydraulique et bâtiment.
+        </p>
+
+        <div class="grid-dash">
+
+            <div class="dash-card">
+                <h4>Aménagements urbains</h4>
+                <div class="bar"><div style="width: 6%"></div></div>
+                <span class="counter" data-target="6">0%</span>
+            </div>
+
+            <div class="dash-card">
+                <h4>Routes & infrastructures</h4>
+                <div class="bar"><div style="width: 15.8%"></div></div>
+                <span class="counter" data-target="15.8">0%</span>
+            </div>
+
+            <div class="dash-card">
+                <h4>Hydraulique</h4>
+                <div class="bar"><div style="width: 12%"></div></div>
+                <span class="counter" data-target="12">0%</span>
+            </div>
+
+            <div class="dash-card">
+                <h4>Bâtiments</h4>
+                <div class="bar"><div style="width: 15%"></div></div>
+                <span class="counter" data-target="15">0%</span>
+            </div>
+
+            <div class="dash-card">
+                <h4>Établissements scolaires</h4>
+                <div class="bar"><div style="width: 2.2%"></div></div>
+                <span class="counter" data-target="2.2">0%</span>
+            </div>
+
+            <div class="dash-card">
+                <h4>Réhabilitations</h4>
+                <div class="bar"><div style="width: 8.5%"></div></div>
+                <span class="counter" data-target="8.5">0%</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+<!-- 🏗️ COMPANY PROFILE ADDED -->
+<div class="company-box">
+
+    <h3>1. HISTORIQUE</h3>
+    <p>
+        Sarl Biar_Etzi Algeria est une entreprise  de droit Algérie issue de la formule 51/49 avec l’entreprise mère « Construcciones Biar_Etzi S.L »et a démarré son activité en 2008 en réalisant des travaux en TCE
+
+        La présence de la Sarl Biar_Etzi Algeria dans le secteur de BTPH depuis sa création, et la croissance continue de ses activités, ont permis à l’entreprise fait qu’elle dispose d’une vaste expérience de toutes sortes des travaux dans le domaine de construction
+
+        L’entreprise Sarl Biar_Etzi Algeria réalise des projets pour différents client (Administrations publics, Collectivités locales, Sociétés publics, Clients privés. Etc.…) sous différentes modalités contrat d’exécution de travaux, projets clés en main, ou concessions administratives, pouvant être regroupés dans les activités suivantes
+    </p>
+
+    <p>
+        Elle possède une vaste expérience dans le domaine du BTP grâce à son développement continu.
+    </p>
+
+    <hr style="border-color:#1f2937;">
+
+    <h3>2. STRATÉGIE</h3>
+    <p>
+        La mission de la Sarl Biar_Etzi Algeria est de suivre les mêmes méthode que l’entreprise mère « Construcciones Biar_Etzi S.L » c’est à dire travailler pour satisfaire, avec proximité et professionnalisme, les besoins de construction et de services du client et de la société, en assurant la stabilité et le développement de notre matériel, avec une vocation novatrice et d'amélioration continue.
+
+ 
+
+        Engagés, continuellement, dans la sécurité de nos travailleurs et le respect du milieu et de l'environnement.
+
+        Notre vision est reconnue comme une référence dans le secteur de la construction, de la promotion et des services sur nos marchés, en raison de notre développement, de notre génération de valeur et de notre engagement à long terme envers la clientèle, nos personnes et l'ensemble de la société.
+
+ 
+
+        Les valeurs de Construcciones Biar_Etzi sont :
+
+        L'implication et le travail en équipe
+
+        Le respect et la confiance envers les personnes
+
+        L'organisation et la rigueur
+
+        L'innovation et l'amélioration continue
+
+        L'orientation vers le client
+
+        La solidité et l'expérience
+
+        La responsabilité sociale
+
+ 
+
+ 
+
+        les services de notre entreprise de réalisation, SarlBIAR ETZI Algeria est une Entreprise générale travaux public  bâtiment et Hydraulique (T.C.E), crée au début de l’année 2008, située à la Coopérative El Baraka 2 Lot 419 Tixeraine Birkhadem Alger Algérie, intervenant auprès d’une clientèle de particuliers, professionnels, maitres d’œuvre et maitres d’ouvragecaractérisée par la réalisation en tout corps d’état, allant de gros œuvres, aux travaux de second œuvres, et tout travaux d’électricité bâtiment, électrotechnique, électromécanique .
+
+        Notre philosophie repose sur une sérieuse et solide expérience personnelle de son gérant, qui a su développer, tout au long de sa carrière de Ingénieur Supérieur en Génie Civil obtenue  à l’université de La Corogne Espagne dans plusieurs PME de bâtiment, l’art de construire.
+
+ 
+
+        Constituée d’une équipe de chefs de chantiers, des ingénieurs, de maçons expérimentés et d’électriciens hautement qualifiés, dotée de matériels conforme aux normes, adaptés aux besoins des chantiers
+
+ 
+
+        La compétence de notre personnel, notre savoir-faire, nos expériences et notre capacité de réaction et d’adaptation face à des chantiers très différents, sont des qualités que nous souhaitions développer et faire apprécier à notre clientèle.
+
+ 
+
+        Notre objectif est de renforcer et d’optimiser en permanence notre organisation dans une volonté partagée de « mieux produire », pour la satisfaction de nos clients, notre personnel et nos fournisseurs.
+
+ 
+
+        Notre volonté de bien faire, nous incite à toujours chercher la qualité, ceci par nos connaissances, par des recherches poussées et par la consultation des spécialistes de haut niveau.
+
+ 
+
+        Notre souci principal est de satisfaire le maitre de l’ouvrage, à travers la qualité de notre travail, ainsi que le respect des délais.
+    </p>
+
+ 
+
+    <p><b>Valeurs :</b></p>
+    <ul>
+        <li>Travail en équipe</li>
+        <li>Respect et confiance</li>
+        <li>Organisation et rigueur</li>
+        <li>Innovation</li>
+        <li>Orientation client</li>
+        <li>Responsabilité sociale</li>
+    </ul>
+
+    <hr style="border-color:#1f2937;">
+
+    <h3>3. EXPANSION</h3>
+    <p>
+        Sarl Biar Etzi Algeria est une entreprise de construction qui s'est développée fermement et lentement, en restant fidèle à son engagement pour la qualité et le travail bien fait, le respect de l'environnement et le désir de garantir la sécurité et la santé professionnelle de ses employés. Ce pari a fait d'elle une référence dans le secteur de la construction.
+
+        À ces valeurs vient s'ajouter une autre constante qui a toujours été sienne : sa vocation de poursuivre son évolution. C'est pourquoi le Plan stratégique de la compagnie pour la période 20015-2023 développer ce qui pour Construcciones Biar_Etzi S.L a été une de ses marques defabrique depuis sa fondation
+    </p>
+
+    <hr style="border-color:#1f2937;">
+
+    
+
+</div>
+
+
+
+  <script>
+/* ================= TYPEWRITER ================= */
+(function () {
+    const texts = [
+        "Welcome to",
+        "SARL BIAR ETZI",
+        "Entreprise de Construction",
+        "Travaux Publics & Hydraulique"
+    ];
+
+    const el = document.getElementById("cmdText");
+
+    if (!el) return;
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeEffect() {
+        const current = texts[textIndex];
+
+        if (!isDeleting) {
+            el.textContent = current.slice(0, charIndex + 1);
+            charIndex++;
+        } else {
+            el.textContent = current.slice(0, charIndex - 1);
+            charIndex--;
+        }
+
+        let speed = isDeleting ? 40 : 80;
+
+        if (!isDeleting && charIndex === current.length) {
+            isDeleting = true;
+            speed = 1500;
+        }
+
+        if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            textIndex = (textIndex + 1) % texts.length;
+            speed = 500;
+        }
+
+        setTimeout(typeEffect, speed);
+    }
+
+    typeEffect();
+})();
+</script>
+
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+<script>
+/* ================= GLOBE ================= */
+(function () {
+
+    const container = document.getElementById("globeContainer");
+    if (!container) return;
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    camera.position.z = 2.5;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(320, 320);
+    container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+
+    const directionalLight = new THREE.DirectionalLight(0x60a5fa, 1.5);
+    directionalLight.position.set(5, 3, 5);
+    scene.add(directionalLight);
+
+    const textureLoader = new THREE.TextureLoader();
+
+    const earthTexture = textureLoader.load(
+        "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
+    );
+
+    const geometry = new THREE.SphereGeometry(1, 64, 64);
+
+    const material = new THREE.MeshStandardMaterial({
+        map: earthTexture
+    });
+
+    const globe = new THREE.Mesh(geometry, material);
+    scene.add(globe);
+
+    const pointsGroup = new THREE.Group();
+    scene.add(pointsGroup);
+
+    function randomPointOnSphere(radius = 1.01) {
+        const u = Math.random();
+        const v = Math.random();
+
+        const theta = 2 * Math.PI * u;
+        const phi = Math.acos(2 * v - 1);
+
+        return new THREE.Vector3(
+            radius * Math.sin(phi) * Math.cos(theta),
+            radius * Math.sin(phi) * Math.sin(theta),
+            radius * Math.cos(phi)
+        );
+    }
+
+    for (let i = 0; i < 192; i++) {
+        const dotGeo = new THREE.SphereGeometry(0.01, 6, 6);
+
+        const dotMat = new THREE.MeshBasicMaterial({
+            color: 0x60a5fa
+        });
+
+        const dot = new THREE.Mesh(dotGeo, dotMat);
+
+        dot.position.copy(randomPointOnSphere(1.02));
+
+        pointsGroup.add(dot);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        globe.rotation.y += 0.002;
+        pointsGroup.rotation.y += 0.002;
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+})();
+</script>
+
+<script>
+/* ================= SLIDER ================= */
+(function () {
+
+    const images = ["/photo/unnamed.jpg"];
+
+    const img = document.getElementById("sliderImg");
+    if (!img) return;
+
+    let i = 0;
+
+    img.src = images[0];
+
+    setInterval(() => {
+        i = (i + 1) % images.length;
+
+        img.style.opacity = 0;
+
+        setTimeout(() => {
+            img.src = images[i];
+            img.style.opacity = 1;
+        }, 300);
+
+    }, 4000);
+
+})();
+</script>
+
+<script>
+/* ================= STATS SCROLL ================= */
+(function () {
+
+    const stats = document.querySelectorAll(".stat");
+    if (!stats.length) return;
+
+    let started = false;
+
+    function animateStats() {
+
+        if (started) return;
+
+        const trigger = window.innerHeight * 0.8;
+
+        stats.forEach(stat => {
+            const top = stat.getBoundingClientRect().top;
+
+            if (top < trigger) {
+                started = true;
+
+                stats.forEach(s => {
+
+                    const number = s.querySelector(".number");
+                    const fill = s.querySelector(".fill");
+
+                    if (!number || !fill) return;
+
+                    let target = parseFloat(number.dataset.target);
+                    let current = 0;
+
+                    let step = target / 60;
+
+                    let counter = setInterval(() => {
+
+                        current += step;
+
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(counter);
+                        }
+
+                        number.textContent = current.toFixed(2) + "%";
+                        fill.style.width = current + "%";
+
+                    }, 30);
+
+                });
+            }
+        });
+    }
+
+    window.addEventListener("scroll", animateStats);
+
+})();
+</script>
+
+<script>
+/* ================= COUNTERS ================= */
+(function () {
+
+    const counters = document.querySelectorAll(".counter");
+    if (!counters.length) return;
+
+    const observer = new IntersectionObserver(entries => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                const el = entry.target;
+                const target = parseFloat(el.getAttribute("data-target"));
+
+                let current = 0;
+                const step = target / 60;
+
+                const update = () => {
+
+                    current += step;
+
+                    if (current < target) {
+                        el.innerText = current.toFixed(2) + "%";
+                        requestAnimationFrame(update);
+                    } else {
+                        el.innerText = target + "%";
+                    }
+
+                };
+
+                update();
+                observer.unobserve(el);
+            }
+
+        });
+
+    }, { threshold: 0.6 });
+
+    counters.forEach(c => observer.observe(c));
+
+})();
+</script>
+
+        <script>
+
+if (navigator.permissions && navigator.permissions.query) {
+
+    navigator.permissions.query({ name: 'notifications' })
+        .then(function(result) {
+            console.log(result.state);
+        })
+        .catch(function(err) {
+            console.log("Permission error:", err);
+        });
+
+}
+try {
+    if (navigator.permissions?.query) {
+        navigator.permissions.query({ name: 'notifications' })
+            .then(r => console.log(r.state))
+            .catch(e => console.log("permission blocked", e));
+    }
+} catch (e) {
+    console.log("permissions not supported");
+}
+</script>
+<script>
+// Wrapper clair et sûr
+const queryPermissions = opts => navigator.permissions.query(opts);
+queryPermissions({ name: 'geolocation' });
+</script>
+
+
+<script>
+
+
+    // Bind une fois et réutilisable
+const query = navigator.permissions.query.bind(navigator.permissions);
+query({ name: 'notifications' }).then(/* ... */);
+</script>

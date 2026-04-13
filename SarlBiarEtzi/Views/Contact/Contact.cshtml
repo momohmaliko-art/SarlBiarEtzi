@@ -1,0 +1,271 @@
+﻿@model Contact
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: #0b1220;
+        color: white;
+    }
+
+    /* ===== TITLE ===== */
+    .title {
+        text-align: center;
+        margin-top: 30px;
+        color: #60a5fa;
+        font-weight: bold;
+    }
+
+    /* ===== WRAPPER ===== */
+    .contact-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 40px;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== PHONE 3D ===== */
+    .phone {
+        width: 320px;
+        height: 600px;
+        background: #111827;
+        border-radius: 40px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.05);
+        position: relative;
+        transform: perspective(1000px) rotateY(-10deg);
+        transition: 0.5s;
+    }
+
+        .phone:hover {
+            transform: perspective(1000px) rotateY(0deg) scale(1.05);
+        }
+
+    /* screen */
+    .screen {
+        position: absolute;
+        top: 40px;
+        left: 20px;
+        right: 20px;
+        bottom: 40px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 25px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+    }
+
+    /* ===== INPUTS ===== */
+    input, textarea {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(96,165,250,0.3);
+        background: rgba(0,0,0,0.3);
+        color: white;
+        outline: none;
+    }
+
+    textarea {
+        height: 100px;
+        resize: none;
+    }
+
+    /* ===== BUTTON 3D BLUE ===== */
+    .btn-3d {
+        width: 100%;
+        padding: 10px;
+        background: #3b82f6;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 6px 0 #1e3a8a;
+        transition: 0.2s;
+    }
+
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1e3a8a;
+        }
+
+    /* ===== INFO CARDS 3D ===== */
+    .info-box {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 320px;
+    }
+
+    .card-3d {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(96,165,250,0.2);
+        border-radius: 15px;
+        padding: 15px;
+        backdrop-filter: blur(10px);
+        transition: 0.4s;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+        .card-3d:hover {
+            transform: translateY(-8px) rotateX(8deg);
+            border: 1px solid rgba(96,165,250,0.6);
+        }
+
+    .card-title {
+        color: #60a5fa;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+
+
+    <!-- BUTTON -->
+    <a href="https://maps.google.com/?q=36.721169,3.010183"
+       target="_blank"
+       class="btn-3d"
+       style="display:block; text-align:center;">
+        📌 Ouvrir dans Google Maps
+    </a>
+</div>
+
+
+
+
+
+/* 🌍 MAP EFFECT */
+.map-box {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.map-box iframe {
+    width: 100%;
+    height: 150px;
+    border: none;
+    transition: 0.5s;
+}
+
+.map-box:hover iframe {
+    transform: scale(1.1);
+}
+
+/* 📍 PING ANIMATION */
+.map-pin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: red;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.map-pin::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: red;
+    animation: ping 1.5s infinite;
+}
+
+@@keyframes ping {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(3); opacity: 0; }
+}
+
+/* ✨ CARD GLOW */
+.card-3d:hover {
+    box-shadow: 0 0 25px rgba(96,165,250,0.6);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+
+<h1 class="title">Contact Sarl Biar Etzi</h1>
+
+<div class="contact-wrapper">
+
+    <!-- 📱 PHONE FORM -->
+    <div class="phone">
+        <div class="screen">
+
+            <form asp-action="Send" method="post">
+
+                <input asp-for="Name" placeholder="Name" />
+                <input asp-for="Email" placeholder="Email" />
+                <textarea asp-for="Message" placeholder="Message"></textarea>
+
+                <button type="submit" class="btn-3d">Send Message</button>
+
+            </form>
+
+            @if (ViewBag.Message != null)
+            {
+                <p style="color:#22c55e; margin-top:10px;">
+                    @ViewBag.Message
+                </p>
+            }
+
+        </div>
+    </div>
+
+    <!-- 📞 INFO CARDS -->
+    <div class="info-box">
+
+        <div class="card-3d">
+            <div class="card-title">📧 Email</div>
+            <div>sarl.biaretzi@gmail.com</div>
+            <div>biar_etzi@yahoo.es</div>
+        </div>
+
+        <div class="card-3d">
+            <div class="card-title">📱 Phone</div>
+            <div>+213 776 24 16 57</div>
+            <div>+213 665 50 87 04</div>
+            <div>+34 615 75 84 56</div>
+        </div>
+
+        <div class="card-3d">
+            <div class="card-title">📠 Fax</div>
+            <div>+213 2356 43 87</div>
+        </div>
+
+    </div>
+
+
+    <div class="card-3d">
+        <div class="card-title">📍 Adresse entreprise</div>
+
+        <div style="margin-bottom:10px;">
+            Birkhadem, Alger - Algérie
+        </div>
+
+        <!-- 🗺️ MAP -->
+        <div class="map-box">
+            <iframe src="https://maps.google.com/maps?q=36.721169,3.010183&z=15&output=embed"></iframe>
+            <div class="map-pin"></div>
+        </div>
+
+
+
+
+</div>
