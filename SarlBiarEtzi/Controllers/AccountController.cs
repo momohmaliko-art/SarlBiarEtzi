@@ -14,6 +14,7 @@ public class AccountController : Controller
     public AccountController(IConfiguration config)
     {
         _config = config;
+
     }
 
     [HttpPost]

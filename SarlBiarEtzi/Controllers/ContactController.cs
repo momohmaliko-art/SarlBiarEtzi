@@ -12,9 +12,14 @@ namespace SarlBiarEtzi.Controllers
 
         public ContactController(IConfiguration configuration, GroqService groq)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            var url =
+                Environment.GetEnvironmentVariable("DATABASE_URL")
+                ?? configuration.GetConnectionString("DefaultConnection");
+
+            _connectionString = ParseDatabaseUrl(url);
             _groq = groq;
         }
+
         /* ================= CONTACT PAGE ================= */
         public IActionResult Contact()
     {
@@ -133,6 +138,23 @@ namespace SarlBiarEtzi.Controllers
 
 
 
+        private string ParseDatabaseUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                throw new Exception("Missing DATABASE_URL");
+
+            if (!url.StartsWith("postgresql://"))
+                return url;
+
+            var uri = new Uri(url);
+
+            var userInfo = uri.UserInfo.Split(':');
+
+            var user = userInfo[0];
+            var password = userInfo[1];
+
+            return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.Trim('/')};Username={user};Password={password};Ssl Mode=Require;Trust Server Certificate=true";
+        }
 
 
 
