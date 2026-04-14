@@ -37,9 +37,6 @@ namespace SarlBiarEtzi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("RoomId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Room_Id")
                         .HasColumnType("integer");
 
@@ -48,8 +45,6 @@ namespace SarlBiarEtzi.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("chat_messages", (string)null);
                 });
@@ -145,17 +140,6 @@ namespace SarlBiarEtzi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("user_login_temp", (string)null);
-                });
-
-            modelBuilder.Entity("SarlBiarEtzi.Models.ChatMessage", b =>
-                {
-                    b.HasOne("SarlBiarEtzi.Models.ChatRoom", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Room");
                 });
 #pragma warning restore 612, 618
         }

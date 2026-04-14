@@ -16,12 +16,24 @@ builder.Services.AddScoped<GroqService>();
 //
 // ================= DATABASE =================
 //
-string? rawUrl =
-    Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL")
-    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+string connectionString;
 
-string connectionString = ParseDatabaseUrl(rawUrl);
+try
+{
+    string? rawUrl =
+        Environment.GetEnvironmentVariable("DATABASE_URL")
+        ?? Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL")
+        ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+    connectionString = ParseDatabaseUrl(rawUrl);
+}
+catch (Exception ex)
+{
+    Console.WriteLine("DB connection parsing error: " + ex.Message);
+
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new Exception("No database connection string found");
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -32,12 +44,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 var app = builder.Build();
 
 //
-// ================= AUTO MIGRATIONS (IMPORTANT 🔥) =================
+// ================= AUTO MIGRATIONS (SAFE) =================
 //
-using (var scope = app.Services.CreateScope())
+try
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Migration error: " + ex.Message);
 }
 
 //
@@ -50,13 +67,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 //
-// ================= MIDDLEWARE =================
+// ================= MIDDLEWARE ORDER (FIXED) =================
 //
-app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 app.UseAuthorization();
 
 //
@@ -83,8 +101,11 @@ app.Run();
 string ParseDatabaseUrl(string? url)
 {
     if (string.IsNullOrEmpty(url))
-        throw new Exception("DATABASE_URL is missing in Railway variables");
+    {
+        throw new Exception("DATABASE_URL is missing");
+    }
 
+    // If already normal connection string
     if (!url.StartsWith("postgresql://"))
         return url;
 

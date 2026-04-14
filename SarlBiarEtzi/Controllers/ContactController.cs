@@ -21,134 +21,178 @@ namespace SarlBiarEtzi.Controllers
             _groq = groq;
         }
 
-        /* ================= CONTACT PAGE ================= */
+        // ================= CONTACT PAGE =================
         public IActionResult Contact()
-    {
-        return View();
-    }
-
-    /* ================= SAVE CONTACT FORM ================= */
-    [HttpPost]
-    public IActionResult Send(Contact model)
-    {
-        using var conn = new NpgsqlConnection(_connectionString);
-        conn.Open();
-
-        var cmd = new NpgsqlCommand(
-            "INSERT INTO contacts (name, email, message) VALUES (@name, @email, @message)",
-            conn
-        );
-
-        cmd.Parameters.AddWithValue("@name", model.Name);
-        cmd.Parameters.AddWithValue("@email", model.Email);
-        cmd.Parameters.AddWithValue("@message", model.Message);
-
-        cmd.ExecuteNonQuery();
-
-        ViewBag.Message = "تم الإرسال بنجاح ✅";
-        return View("Contact");
-    }
-
-    /* ================= ADMIN MESSAGES PAGE ================= */
-    public IActionResult Messages()
-    {
-        if (HttpContext.Session.GetString("user") == null)
         {
-            return RedirectToAction("Login", "Account");
+            return View();
         }
 
-        var list = new List<Contact>();
-
-        using var conn = new NpgsqlConnection(_connectionString);
-        conn.Open();
-
-        var cmd = new NpgsqlCommand(
-            "SELECT id, name, email, message FROM contacts ORDER BY id DESC",
-            conn
-        );
-
-        using var reader = cmd.ExecuteReader();
-
-        while (reader.Read())
+        // ================= SAVE CONTACT =================
+        [HttpPost]
+        public IActionResult Send(Contact model)
         {
-            list.Add(new Contact
+            try
             {
-                Id = reader.GetInt32(0),
-                Name = reader.GetString(1),
-                Email = reader.GetString(2),
-                Message = reader.GetString(3)
-            });
-        }
+                if (model == null)
+                {
+                    ViewBag.Message = "بيانات فارغة ❌";
+                    return View("Contact");
+                }
 
-        return View(list);
-    }
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
 
-    /* ================= DELETE CONTACT ================= */
-    public IActionResult Delete(int id)
-    {
-        using var conn = new NpgsqlConnection(_connectionString);
-        conn.Open();
+                var cmd = new NpgsqlCommand(
+                    @"INSERT INTO contacts (name, email, message)
+                      VALUES (@name, @email, @message)",
+                    conn
+                );
 
-        var cmd = new NpgsqlCommand(
-            "DELETE FROM contacts WHERE id = @id",
-            conn
-        );
+                cmd.Parameters.AddWithValue("@name", model.Name ?? "");
+                cmd.Parameters.AddWithValue("@email", model.Email ?? "");
+                cmd.Parameters.AddWithValue("@message", model.Message ?? "");
 
-        cmd.Parameters.AddWithValue("@id", id);
-        cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-        return RedirectToAction("Messages");
-    }
-
-    /* ================= CHAT LOAD MESSAGES (FIXED) ================= */
-    [HttpGet]
-    public JsonResult GetRoomMessages()
-    {
-        var list = new List<object>();
-
-        using var conn = new NpgsqlConnection(_connectionString);
-        conn.Open();
-
-        string sql = @"
-        SELECT sender, message
-        FROM chat_messages 
-        ORDER BY created_at ASC
-    ";
-
-        using var cmd = new NpgsqlCommand(sql, conn);
-        using var reader = cmd.ExecuteReader();
-
-        while (reader.Read())
-        {
-            list.Add(new
+                ViewBag.Message = "تم الإرسال بنجاح ✅";
+            }
+            catch (Exception ex)
             {
-                sender = reader.GetString(0),
-                message = reader.GetString(1)
-            });
+                Console.WriteLine("CONTACT ERROR: " + ex.Message);
+                ViewBag.Message = "حدث خطأ أثناء الإرسال ❌";
+            }
+
+            return View("Contact");
         }
 
-        return Json(list);
-    }
+        // ================= MESSAGES (ADMIN) =================
+        public IActionResult Messages()
+        {
+            if (HttpContext.Session.GetString("user") == null)
+                return RedirectToAction("Login", "Account");
 
+            var list = new List<Contact>();
+
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+
+                var cmd = new NpgsqlCommand(
+                    @"SELECT id, name, email, message
+                      FROM contacts
+                      ORDER BY id DESC",
+                    conn
+                );
+
+                using var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    list.Add(new Contact
+                    {
+                        Id = reader.GetInt32(0),
+                        Name = reader.GetString(1),
+                        Email = reader.GetString(2),
+                        Message = reader.GetString(3)
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MESSAGES ERROR: " + ex.Message);
+            }
+
+            return View(list);
+        }
+
+        // ================= DELETE =================
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+
+                var cmd = new NpgsqlCommand(
+                    "DELETE FROM contacts WHERE id = @id",
+                    conn
+                );
+
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("DELETE ERROR: " + ex.Message);
+            }
+
+            return RedirectToAction("Messages");
+        }
+
+        // ================= CHAT MESSAGES =================
+        [HttpGet]
+        public JsonResult GetRoomMessages()
+        {
+            var list = new List<object>();
+
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+
+                var cmd = new NpgsqlCommand(
+                    @"SELECT sender, message
+                      FROM chat_messages
+                      ORDER BY created_at ASC",
+                    conn
+                );
+
+                using var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    list.Add(new
+                    {
+                        sender = reader.GetString(0),
+                        message = reader.GetString(1)
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("CHAT ERROR: " + ex.Message);
+            }
+
+            return Json(list);
+        }
+
+        // ================= AI BOT =================
         [HttpPost]
         public async Task<JsonResult> SendToBot([FromBody] string message)
         {
-            var result = await _groq.SendMessage(message);
-            return Json(new { reply = result });
+            try
+            {
+                var result = await _groq.SendMessage(message);
+                return Json(new { reply = result });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("BOT ERROR: " + ex.Message);
+                return Json(new { reply = "خطأ في البوت" });
+            }
         }
 
-
-
+        // ================= CONNECTION STRING PARSER =================
         private string ParseDatabaseUrl(string url)
         {
             if (string.IsNullOrEmpty(url))
-                throw new Exception("Missing DATABASE_URL");
+                throw new Exception("DATABASE URL NOT FOUND");
 
             if (!url.StartsWith("postgresql://"))
                 return url;
 
             var uri = new Uri(url);
-
             var userInfo = uri.UserInfo.Split(':');
 
             var user = userInfo[0];
@@ -156,8 +200,5 @@ namespace SarlBiarEtzi.Controllers
 
             return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.Trim('/')};Username={user};Password={password};Ssl Mode=Require;Trust Server Certificate=true";
         }
-
-
-
     }
 }
