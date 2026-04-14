@@ -8,6 +8,6 @@
         public string Sender { get; set; }
         public string Message { get; set; }
         public DateTime Created_At { get; set; }
-        public ChatRoom Room { get; set; }
+        
     }
 }

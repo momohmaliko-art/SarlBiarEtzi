@@ -14,6 +14,7 @@ namespace SarlBiarEtzi.Controllers
         {
             var url =
                 Environment.GetEnvironmentVariable("DATABASE_URL")
+                ?? Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL")
                 ?? configuration.GetConnectionString("DefaultConnection");
 
             _connectionString = ParseDatabaseUrl(url);
