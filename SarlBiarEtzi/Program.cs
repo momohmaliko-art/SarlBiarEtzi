@@ -27,27 +27,40 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 //
-// ================= APP =================
+// ================= BUILD APP =================
 //
 var app = builder.Build();
 
+//
+// ================= AUTO MIGRATIONS (IMPORTANT 🔥) =================
+//
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
+//
+// ================= ERROR HANDLING =================
+//
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
+//
+// ================= MIDDLEWARE =================
+//
 app.UseSession();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
 
 //
-// ================= HUBS =================
+// ================= SIGNALR HUBS =================
 //
 app.MapHub<NotificationHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
@@ -60,11 +73,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 //
-// ================= PORT =================
+// ================= RUN =================
 //
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://0.0.0.0:{port}");
-
 app.Run();
 
 //
@@ -73,7 +83,7 @@ app.Run();
 string ParseDatabaseUrl(string? url)
 {
     if (string.IsNullOrEmpty(url))
-        throw new Exception("DATABASE URL NOT FOUND");
+        throw new Exception("DATABASE_URL is missing in Railway variables");
 
     if (!url.StartsWith("postgresql://"))
         return url;
