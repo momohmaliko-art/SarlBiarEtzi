@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Npgsql;
 using SarlBiarEtzi.Hubs;
-using System;
+using SarlBiarEtzi.Models;
 using System.Net;
 using System.Net.Mail;
 
@@ -13,60 +12,33 @@ namespace SarlBiarEtzi.Controllers
         private static string SavedEmail;
         private static string SavedOTP;
 
+        private readonly AppDbContext _db;
         private readonly IHubContext<NotificationHub> _hub;
-        private readonly string _connectionString;
 
-        // ================= SMTP CONFIG =================
         private string smtpEmail = "sarlbiar.boot.support@gmail.com";
         private string smtpPassword = "effy zgun bsfw msri";
 
-        public HomeController(IHubContext<NotificationHub> hub, IConfiguration config)
+        public HomeController(AppDbContext db, IHubContext<NotificationHub> hub)
         {
+            _db = db;
             _hub = hub;
-
-            var url =
-                Environment.GetEnvironmentVariable("DATABASE_URL")
-                ?? Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL")
-                ?? config.GetConnectionString("DefaultConnection");
-
-            _connectionString = ParseDatabaseUrl(url);
         }
 
+        // ================= HOME =================
         public IActionResult Index() => View();
         public IActionResult Privacy() => View();
 
-        // ================= GET REVIEWS =================
+        // ================= REVIEWS (EF) =================
         public IActionResult Reviews()
         {
-            var reviews = new List<SarlBiarEtzi.Models.Review>();
-
-            using (var conn = new NpgsqlConnection(_connectionString))
-            {
-                conn.Open();
-
-                string sql = "SELECT id, email, stars, comment, createdat FROM \"Reviews\" ORDER BY id DESC";
-
-                using (var cmd = new NpgsqlCommand(sql, conn))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        reviews.Add(new SarlBiarEtzi.Models.Review
-                        {
-                            Id = Convert.ToInt32(reader["id"]),
-                            Email = reader["email"].ToString(),
-                            Stars = Convert.ToInt32(reader["stars"]),
-                            Comment = reader["comment"].ToString(),
-                            CreatedAt = Convert.ToDateTime(reader["createdat"])
-                        });
-                    }
-                }
-            }
+            var reviews = _db.Reviews
+                .OrderByDescending(r => r.Id)
+                .ToList();
 
             return View(reviews);
         }
 
-        // ================= OTP SEND =================
+        // ================= SEND OTP =================
         [HttpPost]
         public IActionResult SendOTP(string email)
         {
@@ -75,20 +47,23 @@ namespace SarlBiarEtzi.Controllers
 
             try
             {
-                using (var smtpClient = new SmtpClient("smtp.gmail.com"))
+                using var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
-                    smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential(smtpEmail, smtpPassword);
-                    smtpClient.EnableSsl = true;
+                    Port = 587,
+                    Credentials = new NetworkCredential(smtpEmail, smtpPassword),
+                    EnableSsl = true
+                };
 
-                    var mail = new MailMessage();
-                    mail.From = new MailAddress(smtpEmail);
-                    mail.To.Add(email);
-                    mail.Subject = "OTP Verification Code";
-                    mail.Body = $"Your OTP Code is: {SavedOTP}";
+                var mail = new MailMessage
+                {
+                    From = new MailAddress(smtpEmail),
+                    Subject = "OTP Verification Code",
+                    Body = $"Your OTP Code is: {SavedOTP}"
+                };
 
-                    smtpClient.Send(mail);
-                }
+                mail.To.Add(email);
+
+                smtpClient.Send(mail);
 
                 _hub.Clients.All.SendAsync("ReceiveNotification",
                     $"📩 OTP sent to {email}");
@@ -101,7 +76,7 @@ namespace SarlBiarEtzi.Controllers
             return Json(new { success = true });
         }
 
-        // ================= OTP VERIFY =================
+        // ================= VERIFY OTP =================
         [HttpPost]
         public IActionResult VerifyOTP(string email, string otp)
         {
@@ -118,33 +93,25 @@ namespace SarlBiarEtzi.Controllers
             return Json(new { success = false });
         }
 
-        // ================= ADD REVIEW =================
+        // ================= ADD REVIEW (EF) =================
         [HttpPost]
         public IActionResult AddReview(int stars, string comment)
         {
             var email = HttpContext.Session.GetString("user");
 
-            if (email == null)
+            if (string.IsNullOrEmpty(email))
                 return RedirectToAction("Reviews");
 
-            using (var conn = new NpgsqlConnection(_connectionString))
+            var review = new Review
             {
-                conn.Open();
+                Email = email,
+                Stars = stars,
+                Comment = comment,
+                CreatedAt = DateTime.UtcNow
+            };
 
-                string sql = @"
-                    INSERT INTO ""Reviews"" (""Email"", ""Stars"", ""Comment"", ""CreatedAt"")
-                    VALUES (@email, @stars, @comment, NOW())
-                ";
-
-                using (var cmd = new NpgsqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@email", email);
-                    cmd.Parameters.AddWithValue("@stars", stars);
-                    cmd.Parameters.AddWithValue("@comment", comment);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            _db.Reviews.Add(review);
+            _db.SaveChanges();
 
             _hub.Clients.All.SendAsync("ReceiveNotification",
                 $"⭐ New review from {email}");
@@ -156,24 +123,6 @@ namespace SarlBiarEtzi.Controllers
         public IActionResult Error()
         {
             return View();
-        }
-
-        // ================= PARSER =================
-        private string ParseDatabaseUrl(string url)
-        {
-            if (string.IsNullOrEmpty(url))
-                throw new Exception("DATABASE URL NOT FOUND");
-
-            if (!url.StartsWith("postgresql://"))
-                return url;
-
-            var uri = new Uri(url);
-            var userInfo = uri.UserInfo.Split(':');
-
-            var username = userInfo[0];
-            var password = userInfo[1];
-
-            return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.Trim('/')};Username={username};Password={password};Ssl Mode=Require;Trust Server Certificate=true";
         }
     }
 }

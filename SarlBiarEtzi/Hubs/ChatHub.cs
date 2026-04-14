@@ -1,47 +1,51 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Npgsql;
+using SarlBiarEtzi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SarlBiarEtzi.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly string _conn;
+        private readonly AppDbContext _db;
 
-        public ChatHub(IConfiguration config)
+        public ChatHub(AppDbContext db)
         {
-            _conn =
-                Environment.GetEnvironmentVariable("DATABASE_URL")
-                ?? Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL")
-                ?? config.GetConnectionString("DefaultConnection");
+            _db = db;
         }
 
+        // ================= JOIN GROUP =================
         public async Task JoinGeneral()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "GENERAL");
         }
 
+        // ================= LEAVE GROUP =================
         public async Task LeaveGeneral()
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "GENERAL");
         }
 
+        // ================= SEND MESSAGE (EF) =================
         public async Task SendMessage(string sender, string message)
         {
-            using var conn = new NpgsqlConnection(_conn);
-            await conn.OpenAsync();
+            try
+            {
+                var chat = new ChatMessage
+                {
+                    Sender = sender ?? "unknown",
+                    Message = message ?? "",
+                    Created_At = DateTime.UtcNow
+                };
 
-            var sql = @"
-                INSERT INTO chat_messages(sender, message, created_at)
-                VALUES(@sender, @message, NOW());
-            ";
+                _db.ChatMessages.Add(chat);
+                await _db.SaveChangesAsync();
 
-            using var cmd = new NpgsqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@sender", sender ?? "unknown");
-            cmd.Parameters.AddWithValue("@message", message ?? "");
-
-            await cmd.ExecuteNonQueryAsync();
-
-            await Clients.All.SendAsync("ReceiveMessage", sender, message);
+                await Clients.All.SendAsync("ReceiveMessage", sender, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("CHAT HUB ERROR: " + ex.Message);
+            }
         }
     }
 }
