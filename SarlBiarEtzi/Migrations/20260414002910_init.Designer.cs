@@ -12,8 +12,8 @@ using SarlBiarEtzi.Models;
 namespace SarlBiarEtzi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260413231945_fix_models")]
-    partial class fix_models
+    [Migration("20260414002910_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
