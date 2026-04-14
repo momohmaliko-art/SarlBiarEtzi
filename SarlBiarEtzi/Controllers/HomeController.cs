@@ -16,7 +16,7 @@ namespace SarlBiarEtzi.Controllers
         private readonly IHubContext<NotificationHub> _hub;
 
         private string smtpEmail = "sarlbiar.boot.support@gmail.com";
-        private string smtpPassword = "effy zgun bsfw msri";
+        private string smtpPassword = "lpwo akcj tpnj kvze";
 
         public HomeController(AppDbContext db, IHubContext<NotificationHub> hub)
         {
